@@ -37,8 +37,6 @@ def get_books(status: Optional[str] = None):
     return books_db
 
 
-# /books/stats must be registered BEFORE /books/{book_id} to avoid
-# FastAPI matching "stats" as an integer book_id and returning a 422.
 @app.get("/books/stats")
 def get_stats():
     total = len(books_db)

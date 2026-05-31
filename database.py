@@ -1,18 +1,32 @@
-'''
-Author: Telliex telliexyuzo@gmail.com
-Date: 2026-05-30 21:00:27
-LastEditors: Telliex telliexyuzo@gmail.com
-LastEditTime: 2026-05-30 21:02:53
-FilePath: /week-04-api/database.py
-Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
-'''
-    
-"""
-    Create a database.py file for a FastAPI + SQLAlchemy setup that:
-1. Reads DATABASE_URL from an environment variable using python-dotenv
-2. Creates a SQLAlchemy engine
-3. Creates a SessionLocal factory
-4. Creates a Base class for models to inherit from
-5. Provides a get_db() dependency function that yields a session and closes it
-Include comments explaining each part.
-"""
+import os
+from dotenv import load_dotenv
+from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
+
+# Load environment variables from a .env file if present.
+load_dotenv()
+
+# Read the database connection URL from the environment.
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL environment variable is not set")
+
+# Create the SQLAlchemy engine. This manages connections and the DB dialect.
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {},
+)
+
+# Create a configured "SessionLocal" class for creating session objects.
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Create a base class for ORM models to inherit from.
+Base = declarative_base()
+
+# FastAPI dependency that provides a DB session and ensures it is closed.
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

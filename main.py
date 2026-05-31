@@ -1,21 +1,3 @@
-# Test every endpoint using the `/docs` page at `http://localhost:8000/docs`.
-
-# Test sequence:
-# 1. `GET /books` — should return empty list
-# 2. `POST /books` — add "Dune" by Frank Herbert, status "read", rating 5
-# 3. `POST /books` — add "1984" by George Orwell, status "reading"
-# 4. `POST /books` — add "Clean Code" by Robert Martin, status "want_to_read"
-# 5. `GET /books` — should return all 3
-# 6. `GET /books?status=reading` — should return only "1984"
-# 7. `GET /books/1` — should return "Dune"
-# 8. `PUT /books/2` — update "1984" to status "read", rating 4
-# 9. `GET /books/stats` — should show totals and average rating
-# 10. `DELETE /books/3` — delete "Clean Code"
-# 11. `GET /books` — should show only 2 books
-
-# Take a screenshot of the docs page showing your endpoints and at least one "Responses" section expanded.
-
-
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import Optional

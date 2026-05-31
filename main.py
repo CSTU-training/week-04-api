@@ -1,4 +1,9 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
+from sqlalchemy.orm import Session
+
+from database import get_db, engine
+from models import Book, Base
+from schemas import BookCreate, BookUpdate, BookResponse
 from pydantic import BaseModel
 from typing import Optional
 
@@ -13,7 +18,9 @@ class BookUpdate(BaseModel):
     rating: Optional[int] = None
 
 
-app = FastAPI(title="Book Tracker API", version="1.0.0")
+Base.metadata.create_all(bind=engine)
+
+app = FastAPI(title="Book Tracker API", version="2.0.0")
 
 # In-memory storage
 books_db = []
